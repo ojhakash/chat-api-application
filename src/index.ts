@@ -5,7 +5,7 @@ import config from "./config/config";
 const port = config.port
 
 app.listen(port, async () => {
-  await sequelize.sync({});
+  await sequelize.sync({alter:true});
   console.log("All models were synchronized successfully.");
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

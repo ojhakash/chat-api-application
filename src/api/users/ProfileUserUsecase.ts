@@ -3,11 +3,12 @@ import UserRepository from "@/repository/user.repository";
 import BaseUsecasae from "@/api/BaseUsecase";
 import { Response } from "express";
 import { CustomRequest } from "@/types/interface";
+import Joi from "joi";
 
 /**
  * @swagger
  * tags:
- *   name: Users
+ *   name: User
  *   description: User management
  * components:
  *   securitySchemes:
@@ -43,11 +44,8 @@ import { CustomRequest } from "@/types/interface";
  *           format: date-time
  *           description: Creation date and time
  *           example: "2024-01-30T08:30:00Z"
- *        
+ *
  */
-
-
-
 
 /**
  * @openapi
@@ -88,22 +86,24 @@ export default class ProfileUserUsecase extends BaseUsecasae {
     this.userRepository = userRepository;
   }
 
-  validate(): void {
-
-  }
+  validate(): void {}
 
   async execute() {
     try {
-      this.validate(); 
-      let userId = (this.request as CustomRequest).user.id
-      return await this.userRepository.findUserById(userId)
+      this.validate();
+      let userId = (this.request as CustomRequest).user.id;
+      return await this.userRepository.findUserById(userId);
     } catch (error) {
       throw error;
     }
   }
 
   static create(request: Request, response: Response) {
-    let useCase = new ProfileUserUsecase(request, response, new UserRepository());
+    let useCase = new ProfileUserUsecase(
+      request,
+      response,
+      new UserRepository()
+    );
     return useCase;
   }
 }

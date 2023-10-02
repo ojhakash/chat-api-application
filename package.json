@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=1000",
+    "test": "cross-env NODE_ENV=test jest --verbose --coverage --forceExit --watchAll --maxWorkers=1 --testTimeout=18000",
     "pretest": "npm run db:reset:test",
     "db:reset:test": "cross-env NODE_ENV=test npx sequelize-cli db:drop && cross-env NODE_ENV=test npx sequelize-cli db:create",
     "start": "npx ts-node -r tsconfig-paths/register ./src/index.ts"

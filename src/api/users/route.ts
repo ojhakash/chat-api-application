@@ -7,6 +7,7 @@ import AddUserUsecase from "./AddUserUsecase";
 
 import { auth, authAdmin } from "@/middleware/auth";
 import UpdateUserUsecase from "./UpdateUserUsecase";
+import ListUserUsecase from "./ListUserUsecase";
 
 const usersRouter = Router();
 
@@ -18,6 +19,11 @@ usersRouter.post("/signup", async (request: Request, response: Response) => {
 usersRouter.post("/user", authAdmin(), async (request: Request, response: Response) => {
   const addUserUsecase = AddUserUsecase.create(request, response);
   await addUserUsecase.executeAndHandleErrors();
+});
+
+usersRouter.get("/user", auth(), async (request: Request, response: Response) => {
+  const listUserUsecase = ListUserUsecase.create(request, response);
+  await listUserUsecase.executeAndHandleErrors();
 });
 
 usersRouter.put("/user/:id", authAdmin(), async (request: Request, response: Response) => {

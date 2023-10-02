@@ -1,6 +1,6 @@
 import User from "@/models/user.model";
 import { UserType } from "@/types/enums/token";
-import { ValidationError } from "sequelize";
+import { Op, ValidationError } from "sequelize";
 
 interface UserCreationAttributes {
   username: string;
@@ -65,6 +65,10 @@ class UserRepository {
 
   async findUserByUsername(username: string): Promise<User | null> {
     return User.findOne({ where: { username } });
+  }
+
+  async findUsers({ searchTerm='' }: { searchTerm?: string }): Promise<User[]> {
+    return User.findAll({ where: { email: { [Op.like]: `%${searchTerm}%` } } });
   }
 
   async findUserByEmail(email: string): Promise<User | null> {

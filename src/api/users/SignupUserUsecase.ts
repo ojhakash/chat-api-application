@@ -9,7 +9,7 @@ import { UserType } from "@/types/enums/token";
 /**
  * @swagger
  * tags:
- *   name: Users
+ *   name: User
  *   description: User management
  * components:
  *   schemas:

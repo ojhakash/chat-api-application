@@ -5,39 +5,11 @@ import User from "@/models/user.model";
 import sequelize from "@/config/Sequalize";
 import { generateAuthTokens } from "@/utils";
 import { faker } from "@faker-js/faker";
-
-export const createUserParams = (params?: {
-  email?: string;
-  username?: string;
-  password?: string;
-  role?: UserType;
-}) => {
-  return {
-    email: faker.internet.email(),
-    password: faker.internet.password() + "@",
-    username: faker.internet.userName(),
-    ...params,
-  };
-};
-
-export const createUserTest = async (userParams: {
-  email: string;
-  username?: string;
-  password: string;
-  role?: UserType;
-}) => {
-  const { email, username, password, role } = userParams;
-  return await User.create({
-    email,
-    password,
-    username: username ? username : email,
-    role: role ? role : UserType.ADMIN,
-  });
-};
-
-const authenticate = async (user: User) => {
-  return await generateAuthTokens(user);
-};
+import {
+  createUserParams,
+  createUserTest,
+  authenticate,
+} from "@/tests/authTest.helper";
 
 beforeEach(async () => {
   await sequelize.sync({ force: true });
@@ -333,8 +305,7 @@ describe("update user tests", () => {
     expect(response.status).toBe(401);
     expect(response.body.message).toBe("Please authenticate");
   });
-
-})
+});
 
 describe("fetch profile tests", () => {
   it("admin user fetch profile successfully", async () => {
@@ -373,5 +344,70 @@ describe("fetch profile tests", () => {
     expect(response.body.email).toBe("akashojha@gmail.com");
     expect(response.body.password).not.toBeDefined();
     expect(response.body.role).toBe(UserType.STANDARD);
+  });
+});
+
+describe("fetch users list tests", () => {
+  it("admin user fetch profile successfully", async () => {
+    const user1 = await createUserTest({
+      email: "akashojha1@gmail.com",
+      password: "secret@12345",
+    });
+
+    const user2 = await createUserTest({
+      email: "akashojha2@gmail.com",
+      password: "secret@12345",
+      role: UserType.STANDARD,
+    });
+
+    const user3 = await createUserTest({
+      email: "akashojha3@gmail.com",
+      password: "secret@12345",
+      role: UserType.STANDARD,
+    });
+
+    const user4 = await createUserTest({
+      email: "akashojha4@gmail.com",
+      password: "secret@12345",
+      role: UserType.STANDARD,
+    });
+
+    const user5 = await createUserTest({
+      email: "akashojha5@gmail.com",
+      password: "secret@12345",
+    });
+
+    const tokens = await authenticate(user1);
+    const response = await request(app)
+      .get("/auth/user")
+      .set("Authorization", `Bearer ${tokens.access.token}`);
+
+    expect(response.status).toBe(200);
+
+    expect(response.body).not.toBeNull();
+    expect(response.body).toHaveLength(5);
+    expect(response.body[2].username).toBe("akashojha3@gmail.com");
+    expect(response.body[2].email).toBe("akashojha3@gmail.com");
+    expect(response.body[2].password).not.toBeDefined();
+    expect(response.body[2].role).toBe(UserType.STANDARD);
+
+    const searchResponse = await request(app)
+      .get("/auth/user?searchText=akashojha4")
+      .set("Authorization", `Bearer ${tokens.access.token}`);
+    expect(searchResponse.body).not.toBeNull();
+    expect(searchResponse.body).toHaveLength(1);
+    expect(searchResponse.body[0].username).toBe("akashojha4@gmail.com");
+    expect(searchResponse.body[0].email).toBe("akashojha4@gmail.com");
+    expect(searchResponse.body[0].password).not.toBeDefined();
+    expect(searchResponse.body[0].role).toBe(UserType.STANDARD);
+  });
+
+  it("fetch user list failed for unauthenticated user", async () => {
+    const response = await request(app)
+      .get("/auth/user")
+      .set("Authorization", `Bearer 132fff`);
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe("Please authenticate");
   });
 });

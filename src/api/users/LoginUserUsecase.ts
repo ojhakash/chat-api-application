@@ -10,7 +10,7 @@ import { generateAuthTokens } from "@/utils";
 /**
  * @swagger
  * tags:
- *   name: Users
+ *   name: User
  *   description: User management
  * components:
  *   schemas:
