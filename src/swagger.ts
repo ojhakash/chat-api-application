@@ -1,4 +1,4 @@
-import {Express, Request } from "express";
+import { Express, Request, Response } from "express";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
@@ -14,9 +14,12 @@ const swaggerSpec = swaggerJSDoc({
   apis: ["./src/api/**/routes.ts", "./src/api/**/*Usecase.ts"],
 });
 
-
-function swaggerDocs(app: Express){
-    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+function swaggerDocs(app: Express) {
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.get("/docs.json", (request: Request, response: Response) => {
+    response.setHeader("Content-Type", "application/json");
+    response.send(swaggerSpec);
+  });
 }
 
 export default swaggerDocs;
