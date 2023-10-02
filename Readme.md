@@ -4,7 +4,7 @@
 ## Run the project
  `git clone https://github.com/ojhakash/chat-api-application`
 ### With docker-compose
- - `docker-compose build .`
+ - `docker-compose build`
  - `docker-compose up`
 
 ### With npm
