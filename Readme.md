@@ -25,6 +25,18 @@
  - `npm run dev`
 
 ## Test the project
+    - Create and add the following details to .env.test file
+    ```plaintext
+    NODE_ENV=test 
+    PORT=5000
+    DB_NAME=my_test
+    DB_USER=user
+    DB_PASSWORD=password
+    DB_HOST=127.0.0.1
+    DB_PORT=5432
+    DB_DIALECT=postgres
+    JWT_SECRET='sshdjcflydktrjz8768756gcg'
+    ```
     npm run test
 
 Your app will be running on http://localhost:5000/
