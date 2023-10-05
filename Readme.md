@@ -25,7 +25,7 @@
  - `npm run dev`
 
 ## Test the project
-    - Create and add the following details to .env.test file
+ - Create and add the following details to .env.test file
     ```plaintext
     NODE_ENV=test 
     PORT=5000
